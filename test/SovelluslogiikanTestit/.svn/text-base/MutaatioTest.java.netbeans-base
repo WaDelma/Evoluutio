@@ -32,7 +32,7 @@ public class MutaatioTest {
     @Test
     public void mutaationJalkeenOtuksenGenomiOnErilainen() {
         Otus otus2 = mutaattori.mutatoi(otus);
-        assertFalse(Arrays.equals(otus.getGenomi().toArray(), otus2.getGenomi().toArray()));
+        assertFalse(Arrays.equals(otus.getGenomi().getGeenit(), otus2.getGenomi().getGeenit()));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class MutaatioTest {
     }
 
     private int geenienItseisarvoSumma(Otus otus) {
-        int[] geenit = otus.getGenomi().toArray();
+        int[] geenit = otus.getGenomi().getGeenit();
         int geenienSumma = 0;
         for (int i = 0; i < 9; i++) {
             geenienSumma += Math.abs(geenit[i]);

@@ -24,7 +24,7 @@ public class GenomiTest {
 
     @Test
     public void genominKopiointiLuoAidonKopion() {
-        Genomi genominKopio = new Genomi(genomi);
+        Genomi genominKopio = genomi.kopioiGenomi();
         assertFalse(genominKopio == genomi);
     }
 }

@@ -4,6 +4,7 @@
  */
 package Logiikka;
 
+import Logiikka.Genomi.Gene;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -41,32 +42,28 @@ public class Mutaatio {
      * @return
      */
     public Otus mutatoi(Otus vanhempi) {
-        Genomi mutatoitavaGenomi = vanhempi.getGenomi().kopioiGenomi();
-        int mutaationIndeksi = arpoja.nextInt(mutatoitavaGenomi.genominPituus());
-        teeMutaatioIndeksiin(mutatoitavaGenomi.getGeenit(), mutaationIndeksi);
+        Genomi mutatoitavaGenomi = new Genomi(vanhempi.getGenomi());
+        teeMutaatioIndeksiin(mutatoitavaGenomi, Gene.get(arpoja));
         return new Otus(mutatoitavaGenomi);
     }
 
     /**
      * Metodi suorittaa mutaation haluttuun geeniin, ja varmistaa että se ei
-     * ylitä maksimiarvoa. Jos arvo ylittyisi, muutosta ei tehdä jolloin se ei
-     * eroa vanhemmasta eikä siten pääse jälkeläisiin.
+     * ylitä maksimiarvoa.
      *
      * @param genomi muutettava genomi
-     * @param indeksi mutatoitavan geenin indeksinumero genomissa.
+     * @param gene mutatoitavan geenin indeksinumero genomissa.
      */
-    private void teeMutaatioIndeksiin(int[] geenit, int indeksi) {
-        int mutaatio = geenit[indeksi];
-        if (arpoja.nextInt(2) == 1) {
-            mutaatio += 1;
-        } else {
-            mutaatio -= 1;
+    private void teeMutaatioIndeksiin(Genomi geenit, Gene gene) {
+        int mutaatio = geenit.get(gene);
+        mutaatio += arpoja.nextBoolean() ? -gene.getStep() : gene.getStep();
+        if(mutaatio < gene.getMin()){
+            mutaatio = gene.getMin();
         }
-        if (mutaatio >= -9 && mutaatio <= 9) {
-            geenit[indeksi] = mutaatio;
-        } else {
-            teeMutaatioIndeksiin(geenit, indeksi);
+        if(mutaatio > gene.getMax()){
+            mutaatio = gene.getMax();
         }
+        geenit.setGene(gene, mutaatio);
     }
 
     /**

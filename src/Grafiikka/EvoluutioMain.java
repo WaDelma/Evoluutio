@@ -5,6 +5,7 @@
 package Grafiikka;
 
 import Logiikka.Genomi;
+import Logiikka.Genomi.Gene;
 import Logiikka.Otus;
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,14 +48,13 @@ public class EvoluutioMain {
      * @return Hieno uusi sattumanvarainen otus.
      */
     private static Otus randomOtus() {
-        int[] genomi = new int[13];
-        for (int i = 0; i < 13; i++) {
-            genomi[i] = random.nextInt(11) - 5;
-            if (i == 2) {
-                genomi[i] -= 2;
-            }
+        Gene[] genes = Gene.values();
+        int[] genomi = new int[genes.length];
+        for (int i = 0; i < genes.length; i++) {
+            int max = genes[i].getMax();
+            int min = genes[i].getMin();
+            genomi[i] = random.nextInt(max - min) + min;
         }
-
         return new Otus(new Genomi(genomi));
     }
 }

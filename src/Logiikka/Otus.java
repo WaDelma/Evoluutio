@@ -4,6 +4,10 @@
  */
 package Logiikka;
 
+import Logiikka.Genomi.Gene;
+import java.util.Map;
+import java.util.Map.Entry;
+
 /**
  * Ohjelman kohde ja perusyksikkö, Genomin sisältävä luokka, joita
  * OtuksenPiirtoPaneeli piirtää.
@@ -39,14 +43,14 @@ public class Otus {
      */
     @Override
     public String toString() {
-        String palautettava = "";
-        int[] geenit = genomi.getGeenit();
-        for (int i = 0; i < geenit.length; i++) {
-            palautettava += geenit[i];
-            if (i < geenit.length - 1) {
-                palautettava += ",";
-            }
+        StringBuilder builder = new StringBuilder();
+        for(Entry<Gene, Integer> gene: genomi){
+            builder.append(gene.getValue());
+            builder.append(",");
         }
-        return palautettava;
+        if(builder.length() > 0){
+            builder.setLength(builder.length() - 1);
+        }
+        return builder.toString();
     }
 }

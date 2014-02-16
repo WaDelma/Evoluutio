@@ -1,8 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package Logiikka;
+
+import Logiikka.Genomi.Gene;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Random;
 
 /**
  * Otuksen genomista kirjaa pitävä luokka, joka voi myös kopioida sen
@@ -10,39 +12,127 @@ package Logiikka;
  *
  * @author lvapaaka
  */
-public class Genomi {
+public class Genomi implements Iterable<Entry<Gene, Integer>> {
 
     /**
      * Genomin sisältö, tulkitaan geeneiksi GenominTulkitsimessa
      */
-    private int[] geenit;
+//    private int[] geenit;
+    private final EnumMap<Gene, Integer> genes;
 
     public Genomi(int[] geenit) {
-        this.geenit = geenit;
+//        this.geenit = geenit;
+        this.genes = new EnumMap<Gene, Integer>(Gene.class);
+        for (int i = 0; i < geenit.length; i++) {
+            genes.put(Gene.values()[i], geenit[i]);
+        }
     }
 
-    /**
-     * Metodi palauttaa geenit 9-paikkaisena int-taulukkona
-     *
-     * @return taulukko
-     */
-    public int[] getGeenit() {
-        return geenit;
+    public Genomi(Genomi genomi) {
+        this.genes = new EnumMap<Gene, Integer>(genomi.genes);
     }
 
-    public int genominPituus() {
-        return geenit.length;
+    public int get(Gene gene) {
+        Integer result = genes.get(gene);
+        return result == null ? 0 : result;
     }
 
-    /**
-     * Metodi tekee Genomista aidon kopion, joka mahdollistaa otusten Genomien
-     * mutatoinnin ilman niiden vanhempien genomien muuttamista.
-     *
-     * @return Palauttaa luonnollisesti uuden Genomin.
-     */
-    public Genomi kopioiGenomi() {
-        int[] kopio = new int[geenit.length];
-        System.arraycopy(geenit, 0, kopio, 0, geenit.length);
-        return new Genomi(kopio);
+    public void setGene(Gene gene, int value) {
+        genes.put(gene, value);
+    }
+
+    public int[] toArray() {
+        Object[] from = genes.values().toArray();
+        int[] result = new int[from.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = (Integer) from[i];
+        }
+        return result;
+    }
+
+    @Override
+    public Iterator<Entry<Gene, Integer>> iterator() {
+        return genes.entrySet().iterator();
+    }
+
+    public static enum Gene {
+
+        /**
+         * Ensimmäinen Geeni, lisää (tai vähentää) haarautumiskulmaa.
+         */
+        ANGLE_CHANGE(-9, 9),
+        /**
+         * Toinen Geeni, pidentää (tai lyhentää) piirrettäviä viivoja.
+         */
+        LENGTH_CHANGE(-9, 9),
+        /**
+         * Kolmas Geeni, määrittää puun haarautumisten määrän välillä 0-18.
+         */
+        TREE_BRANCHING(0, 18),
+        /**
+         * Neljäs Geeni, jolla määritetään viivojen pituuteen vaikuttava
+         * kerroin.
+         */
+        BRANCH_DIMINISHING(-9, 9),
+        /**
+         * Viides Geeni, joka määrittää otuksen leveyden kertoimen välillä (n.)
+         * 0.1-2.0.
+         */
+        Y_GROWTH(-9, 9),
+        /**
+         * Kuudes Geeni, joka määrittää otuksen korkeuden kertoimen välillä (n.)
+         * 0.1-2.0.
+         */
+        X_GROWTH(-9, 9),
+        /**
+         * Seitsemäs Geeni, joka muuttaa haarautumiskulmaa tulona haaran
+         * suhteen.
+         */
+        TWISTING(-9, 9),
+        /**
+         * Kahdeksas Geeni, joka toimii kieroutumisen kaltaisesti, mutta
+         * vahvemmin alussa ja heikommin lopussa.
+         */
+        ANTI_TWISTING(-9, 9),
+        /**
+         * Viimeinen Geeni, joka lisää puun haarautumista, eli oksien
+         * lähtösuuntaa suhteessa toisiinsa.
+         */
+        BRANCHING_ANGLE(-9, 9),
+        REDNESS(0, 255, 16),
+        GREENNES(0, 255, 16),
+        BLUENESS(0, 255, 16),
+        COLORSHIFT(-9, 9);
+        private int min;
+        private int max;
+        private int step;
+        
+        private Gene(int min, int max, int step) {
+            this.min = min;
+            this.max = max;
+            this.step = step;
+        }
+
+        private Gene(int min, int max) {
+            this.min = min;
+            this.max = max;
+            this.step = 1;
+        }
+
+        public int getMin() {
+            return min;
+        }
+
+        public int getMax() {
+            return max;
+        }
+        
+        public static Gene get(Random random){
+            return values()[random.nextInt(values().length)];
+        }
+
+        public int getStep() {
+            return step;
+        }
     }
 }
