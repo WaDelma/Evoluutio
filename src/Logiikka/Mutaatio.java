@@ -57,10 +57,10 @@ public class Mutaatio {
     private void teeMutaatioIndeksiin(Genomi geenit, Gene gene) {
         int mutaatio = geenit.get(gene);
         mutaatio += arpoja.nextBoolean() ? -gene.getStep() : gene.getStep();
-        if(mutaatio < gene.getMin()){
+        if (mutaatio < gene.getMin()) {
             mutaatio = gene.getMin();
         }
-        if(mutaatio > gene.getMax()){
+        if (mutaatio > gene.getMax()) {
             mutaatio = gene.getMax();
         }
         geenit.setGene(gene, mutaatio);

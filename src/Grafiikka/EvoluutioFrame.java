@@ -115,13 +115,12 @@ public class EvoluutioFrame extends JFrame implements MouseListener {
         }
         repaint();
     }
-    
+
     /**
      * Pakolliset toteutettavat MouseListener-metodit.
-     * 
-     * @param me 
+     *
+     * @param me
      */
-
     @Override
     public void mousePressed(MouseEvent me) {
     }

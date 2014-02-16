@@ -8,12 +8,12 @@ public class Vector {
 
     private double x;
     private double y;
-    
+
     public Vector() {
         this.x = 0;
         this.y = 0;
     }
-    
+
     public Vector(Vector vector) {
         this.x = vector.x;
         this.y = vector.y;
@@ -39,5 +39,4 @@ public class Vector {
     public double getY() {
         return y;
     }
-
 }

@@ -38,7 +38,7 @@ public class MutaatioTest {
     @Test
     public void mutaattoriPalauttaaKahdeksanJalkelaista() {
         ArrayList<Otus> jalkelaiset = mutaattori.jalkelaisetJaVanhempi(otus);
-        assertEquals(8+1, jalkelaiset.size()); // +1 on vanhempi
+        assertEquals(8 + 1, jalkelaiset.size()); // +1 on vanhempi
     }
 
     @Test
@@ -74,7 +74,7 @@ public class MutaatioTest {
         // voivat jokainen muuttua kahteen suuntaan. Testataan 18+1 koska vanhempi on mukana.
         Mutaatio kaikki = new Mutaatio(18);
         ArrayList<Otus> jalkelaiset = kaikki.jalkelaisetJaVanhempi(otus);
-        assertEquals(18+1, jalkelaiset.size());
+        assertEquals(18 + 1, jalkelaiset.size());
         assertTrue(jalkelaisetEiSisallaKopioita(jalkelaiset));
     }
 

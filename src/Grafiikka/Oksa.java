@@ -5,8 +5,8 @@
 package Grafiikka;
 
 /**
- * Koordinaatistopistettä, haarasukupolvea ja tulokulmaa säilövä olio,
- * jonka avulla Otukset piirretään.
+ * Koordinaatistopistettä, haarasukupolvea ja tulokulmaa säilövä olio, jonka
+ * avulla Otukset piirretään.
  *
  * @author Lassi
  */

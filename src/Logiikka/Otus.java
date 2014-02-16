@@ -5,7 +5,6 @@
 package Logiikka;
 
 import Logiikka.Genomi.Gene;
-import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -44,11 +43,11 @@ public class Otus {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for(Entry<Gene, Integer> gene: genomi){
+        for (Entry<Gene, Integer> gene : genomi) {
             builder.append(gene.getValue());
             builder.append(",");
         }
-        if(builder.length() > 0){
+        if (builder.length() > 0) {
             builder.setLength(builder.length() - 1);
         }
         return builder.toString();

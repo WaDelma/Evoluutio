@@ -103,10 +103,14 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
         GREENNES(0, 255, 16),
         BLUENESS(0, 255, 16),
         COLORSHIFT(-9, 9);
+
+        public static Gene get(Random random) {
+            return values()[random.nextInt(values().length)];
+        }
         private int min;
         private int max;
         private int step;
-        
+
         private Gene(int min, int max, int step) {
             this.min = min;
             this.max = max;
@@ -125,10 +129,6 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
 
         public int getMax() {
             return max;
-        }
-        
-        public static Gene get(Random random){
-            return values()[random.nextInt(values().length)];
         }
 
         public int getStep() {
