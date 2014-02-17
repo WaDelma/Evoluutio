@@ -17,11 +17,9 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
     /**
      * Genomin sisältö, tulkitaan geeneiksi GenominTulkitsimessa
      */
-//    private int[] geenit;
     private final EnumMap<Gene, Integer> genes;
 
     public Genomi(int[] geenit) {
-//        this.geenit = geenit;
         this.genes = new EnumMap<Gene, Integer>(Gene.class);
         for (int i = 0; i < geenit.length; i++) {
             genes.put(Gene.values()[i], geenit[i]);

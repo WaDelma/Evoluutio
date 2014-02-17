@@ -6,6 +6,7 @@ package Grafiikka;
 
 import Logiikka.Genomi;
 import Logiikka.Genomi.Gene;
+import Logiikka.Mutaatio;
 import Logiikka.Otus;
 import Logiikka.Vector;
 import java.awt.Color;
@@ -26,7 +27,6 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * Piirrettävä otus.
      */
     private Otus otus;
-    private Genomi genome;
     /**
      * Otuksen piirtämiselle elintärkeä oksalista.
      */
@@ -34,7 +34,7 @@ public class OtuksenPiirtoPaneeli extends JPanel {
     /**
      * Kulmien määrittämisen mahdollistava perusarvo.
      */
-    private double kymmenisenAstetta = (Math.PI / 180) * 9.5;
+    private double nearlyTenDegrees = (Math.PI / 180) * 9.5;
     /**
      * Puun viivojen pituuteen vaikuttava perusarvo.
      */
@@ -42,7 +42,6 @@ public class OtuksenPiirtoPaneeli extends JPanel {
 
     public OtuksenPiirtoPaneeli(Otus otus) {
         this.otus = otus;
-        this.genome = otus.getGenomi();
     }
 
     /**
@@ -52,7 +51,6 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      */
     public void setOtus(Otus otus) {
         this.otus = otus;
-        this.genome = otus.getGenomi();
     }
 
     /**
@@ -65,17 +63,18 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      */
     @Override
     public void paintComponent(Graphics g) {
-        saadaVari(g, 1);
-
-
+        Genomi genome = otus.getGenomi();
+        Oksa oksa = new Oksa(200, 150, 0, 0, otus);
+        saadaVari(g, 1, oksa);
         g.drawLine(200, 150 + (oletusPituus + (genome.get(Gene.LENGTH_CHANGE) * 2)), 200, 150);
-        oksat.addFirst(new Oksa(200, 150, 0, 0));
+        oksat.addFirst(oksa);
         while (oksat.peekFirst() != null) {
             seuraavatPisteet(g);
         }
     }
 
-    private void saadaVari(Graphics g, float kerroin) {
+    private void saadaVari(Graphics g, float kerroin, Oksa oksa) {
+        Genomi genome = oksa.getOtus().getGenomi();
         float[] varit = Color.RGBtoHSB(genome.get(Gene.REDNESS), genome.get(Gene.GREENNES), genome.get(Gene.BLUENESS), null);
         float savy = varit[0] * kerroin;
         float satu = varit[1] * kerroin;
@@ -92,6 +91,7 @@ public class OtuksenPiirtoPaneeli extends JPanel {
     private void seuraavatPisteet(Graphics g) {
         Oksa oksa = oksat.poll();
         int haara = oksa.getHaara();
+        Genomi genome = oksa.getOtus().getGenomi();
         if (!(haara > genome.get(Gene.TREE_BRANCHING))) {
             piirraHaarat(g, oksa);
         }
@@ -105,12 +105,10 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * @param oksa listasta vedetty ensimmäinen oksa.
      */
     private void piirraHaarat(Graphics g, Oksa oksa) {
-        int haara = oksa.getHaara();
-        double kulma = oksa.getKulma();
-        Vector xyKasvu = xJayKasvu(haara);
-        List<Double> degrees = vasenJaOikeaKulma(kulma, haara);
+        Vector xyKasvu = xJayKasvu(oksa);
+        List<Double> degrees = vasenJaOikeaKulma(oksa);
         for (double degree : degrees) {
-            piirraJaLisaaOksa(oksa.getX(), oksa.getY(), degree, xyKasvu.getX(), xyKasvu.getY(), g, haara);
+            piirraJaLisaaOksa(oksa, degree, xyKasvu.getX(), xyKasvu.getY(), g);
         }
     }
 
@@ -125,14 +123,15 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * @param haara käsiteltävän haaran järjestysnumero
      * @return kaksipaikkainen taulukko [vasen kulma, oikea kulma]
      */
-    private List<Double> vasenJaOikeaKulma(double kulma, int haara) {
+    private List<Double> vasenJaOikeaKulma(Oksa oksa) {
         List<Double> result = new ArrayList<Double>();
-        double haaraKohtainenKulmanMuutos = (9 * kymmenisenAstetta)
-                + (kymmenisenAstetta * genome.get(Gene.ANGLE_CHANGE))
-                + ((kymmenisenAstetta / 10) * (genome.get(Gene.TWISTING) * haara))
-                + (kymmenisenAstetta * 2 * (genome.get(Gene.ANTI_TWISTING) - haara));
-        result.add(kulma + haaraKohtainenKulmanMuutos + genome.get(Gene.BRANCHING_ANGLE));
-        result.add(kulma - haaraKohtainenKulmanMuutos - genome.get(Gene.BRANCHING_ANGLE));
+        Genomi genome = oksa.getOtus().getGenomi();
+        double branchAngleChange = (9 * nearlyTenDegrees)
+                + (nearlyTenDegrees * genome.get(Gene.ANGLE_CHANGE))
+                + ((nearlyTenDegrees / 10) * (genome.get(Gene.TWISTING) * oksa.getHaara()))
+                + (nearlyTenDegrees * 2 * (genome.get(Gene.ANTI_TWISTING) - oksa.getHaara()));
+        result.add(oksa.getKulma() + branchAngleChange + genome.get(Gene.BRANCHING_ANGLE));
+        result.add(oksa.getKulma() - branchAngleChange - genome.get(Gene.BRANCHING_ANGLE));
         return result;
     }
 
@@ -145,10 +144,11 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * @param haara käsiteltävän haaran järjestysnumero
      * @return kaksipaikkainen taulukko [xKasvu,yKasvu]
      */
-    private Vector xJayKasvu(int haara) {
+    private Vector xJayKasvu(Oksa oksa) {
         Vector result = new Vector();
-        double oksienLyhenemisKerroin = ((100 - (genome.get(Gene.BRANCH_DIMINISHING) * haara * 5.0)) / 100.0);
-        double pituus = (oletusPituus + (genome.get(Gene.LENGTH_CHANGE) * 2)) * oksienLyhenemisKerroin;
+        Genomi genome = oksa.getOtus().getGenomi();
+        double branchDiminishing = ((100 - (genome.get(Gene.BRANCH_DIMINISHING) * oksa.getHaara() * 5.0)) / 100.0);
+        double pituus = (oletusPituus + (genome.get(Gene.LENGTH_CHANGE) * 2)) * branchDiminishing;
         result.setX(pituus * ((5.5 + genome.get(Gene.X_GROWTH)) / 9.0));
         result.setY(pituus * ((5.5 + genome.get(Gene.Y_GROWTH)) / 9.0));
         return result;
@@ -166,12 +166,13 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * @param g Grafiikka-olio
      * @param haara haaran järjestysnumero
      */
-    private void piirraJaLisaaOksa(double alkux, double alkuy, double kulma, double xKasvu, double yKasvu, Graphics g, int haara) {
-        double loppux = alkux - (Math.sin(kulma) * xKasvu);
-        double loppuy = alkuy - (Math.cos(kulma) * yKasvu);
-        saadaVari(g, (float) (1 * ((100 - (genome.get(Gene.COLORSHIFT) * haara * 5.0)) / 100.0)));
-        g.drawLine((int) alkux, (int) alkuy, (int) loppux, (int) loppuy);
+    private void piirraJaLisaaOksa(Oksa oksa, double xKasvu, double yKasvu, double kulma, Graphics g) {
+        Genomi genome = oksa.getOtus().getGenomi();
+        double loppux = oksa.getX() - (Math.sin(kulma) * xKasvu);
+        double loppuy = oksa.getY() - (Math.cos(kulma) * yKasvu);
+        saadaVari(g, (float) (1 * ((100 - (genome.get(Gene.COLORSHIFT) * oksa.getHaara() * 5.0)) / 100.0)), oksa);
+        g.drawLine((int) oksa.getX(), (int) oksa.getY(), (int) loppux, (int) loppuy);
 //        g.drawString(otus.toString(), 0, 10);
-        oksat.addFirst(new Oksa(loppux, loppuy, haara + 1, kulma));
+        oksat.addFirst(new Oksa(loppux, loppuy, oksa.getHaara() + 1, kulma, new Mutaatio().mutatoi(otus)));
     }
 }

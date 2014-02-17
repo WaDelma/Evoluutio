@@ -4,6 +4,9 @@
  */
 package Grafiikka;
 
+import Logiikka.Genomi;
+import Logiikka.Otus;
+
 /**
  * Koordinaatistopistettä, haarasukupolvea ja tulokulmaa säilövä olio, jonka
  * avulla Otukset piirretään.
@@ -28,8 +31,10 @@ public class Oksa {
      * Tulokulma pisteeseen.
      */
     private double kulma;
+    private final Otus otus;
 
-    public Oksa(double x, double y, int haara, double kulma) {
+    public Oksa(double x, double y, int haara, double kulma, Otus genome) {
+        this.otus = genome;
         this.x = x;
         this.y = y;
         this.haara = haara;
@@ -50,5 +55,9 @@ public class Oksa {
 
     public double getKulma() {
         return kulma;
+    }
+
+    public Otus getOtus() {
+        return otus;
     }
 }
