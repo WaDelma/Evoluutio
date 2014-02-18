@@ -26,10 +26,16 @@ public class Mutaatio {
     private int jalkelaistenMaara = 8;
 
     public Mutaatio() {
+        arpoja = new Random();
     }
 
     public Mutaatio(int jalkelaistenMaara) {
+        this();
         this.jalkelaistenMaara = jalkelaistenMaara;
+    }
+
+    public Otus mutatoi(Otus vanhempi) {
+        return mutatoi(vanhempi, arpoja, 1);
     }
 
     /**
@@ -41,9 +47,9 @@ public class Mutaatio {
      * @param vanhempi Otus josta halutaan tehdä mutatoitu versio
      * @return
      */
-    public Otus mutatoi(Otus vanhempi) {
+    public Otus mutatoi(Otus vanhempi, Random random, double amount) {
         Genomi mutatoitavaGenomi = new Genomi(vanhempi.getGenomi());
-        teeMutaatioIndeksiin(mutatoitavaGenomi, Gene.get(arpoja));
+        teeMutaatioIndeksiin(mutatoitavaGenomi, Gene.get(random), random, amount);
         return new Otus(mutatoitavaGenomi);
     }
 
@@ -54,17 +60,17 @@ public class Mutaatio {
      * @param genomi muutettava genomi
      * @param gene mutatoitavan geenin indeksinumero genomissa.
      */
-    private void teeMutaatioIndeksiin(Genomi geenit, Gene gene) {
+    private void teeMutaatioIndeksiin(Genomi geenit, Gene gene, Random random, double amount) {
         double mutaatio = geenit.get(gene);
-        int dir = arpoja.nextBoolean() ? 1 : -1;
-        mutaatio += dir * (arpoja.nextInt(gene.getMax() - gene.getMin()) + gene.getMin());
+        double dir = random.nextBoolean() ? amount : -amount;
+        mutaatio += dir * (random.nextInt(gene.getMax() - gene.getMin()) + gene.getMin());
         if (mutaatio < gene.getMin()) {
             mutaatio = gene.getMin();
         }
         if (mutaatio > gene.getMax()) {
             mutaatio = gene.getMax();
         }
-        geenit.setGene(gene, (int) mutaatio);
+        geenit.setGene(gene, mutaatio);
     }
 
     /**
@@ -82,7 +88,7 @@ public class Mutaatio {
         Otus otus;
         for (int i = 1; i < (jalkelaistenMaara + 1); i++) {
             while (jalkelaiset.size() != i) {
-                otus = mutatoi(vanhempi);
+                otus = mutatoi(vanhempi, arpoja, 1);
                 if (eiOleJoJalkelaisissa(otus, jalkelaiset)) {
                     jalkelaiset.add(otus);
                 }

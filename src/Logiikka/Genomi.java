@@ -12,38 +12,38 @@ import java.util.Random;
  *
  * @author lvapaaka
  */
-public class Genomi implements Iterable<Entry<Gene, Integer>> {
+public class Genomi implements Iterable<Entry<Gene, Double>> {
 
     /**
      * Genomin sisältö, tulkitaan geeneiksi GenominTulkitsimessa
      */
-    private final EnumMap<Gene, Integer> genes;
+    private final EnumMap<Gene, Double> genes;
 
     public Genomi() {
-        this.genes = new EnumMap<Gene, Integer>(Gene.class);
+        this.genes = new EnumMap<Gene, Double>(Gene.class);
     }
 
     public Genomi(int[] geenit) {
         this();
         for (int i = 0; i < geenit.length; i++) {
-            genes.put(Gene.values()[i], geenit[i]);
+            genes.put(Gene.values()[i], (double) geenit[i]);
         }
     }
 
     public Genomi(Genomi genomi) {
         this();
-        for (Entry<Gene, Integer> entry : genomi) {
-            genes.put(entry.getKey(), entry.getValue().intValue());
+        for (Entry<Gene, Double> entry : genomi) {
+            genes.put(entry.getKey(), entry.getValue());
         }
 
     }
 
-    public int get(Gene gene) {
-        Integer result = genes.get(gene);
+    public double get(Gene gene) {
+        Double result = genes.get(gene);
         return result == null ? 0 : result;
     }
 
-    public void setGene(Gene gene, int value) {
+    public void setGene(Gene gene, double value) {
         genes.put(gene, value);
     }
 
@@ -57,7 +57,7 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
     }
 
     @Override
-    public Iterator<Entry<Gene, Integer>> iterator() {
+    public Iterator<Entry<Gene, Double>> iterator() {
         return genes.entrySet().iterator();
     }
 
@@ -108,7 +108,9 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
         REDNESS(0, 255, 4, 16),
         GREENNES(0, 255, 4, 16),
         BLUENESS(0, 255, 4, 16),
-        COLORSHIFT(-9, 9);
+        COLORSHIFT(-9, 9),
+        CHILDREN(-255, 255),
+        AMOUNT_BRANCHES(2, 3);
 
         public static Gene get(Random random) {
             return values()[random.nextInt(values().length)];

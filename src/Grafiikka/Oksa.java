@@ -4,7 +4,6 @@
  */
 package Grafiikka;
 
-import Logiikka.Genomi;
 import Logiikka.Otus;
 
 /**

@@ -43,7 +43,7 @@ public class EvoluutioFrame extends JFrame implements MouseListener {
         setLayout(new GridLayout(3, 3));
         addMouseListener(this);
         for (int i = 0; i < 9; i++) {
-            paneelit[i] = (new OtuksenPiirtoPaneeli(otukset.get(i)));
+            paneelit[i] = new OtuksenPiirtoPaneeli(otukset.get(i));
         }
         /**
          * paneelit 4 ja 8 vaihdetaan keskenään, jotta ohjelma voi piirtää

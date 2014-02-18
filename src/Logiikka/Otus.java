@@ -43,8 +43,8 @@ public class Otus {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (Entry<Gene, Integer> gene : genomi) {
-            builder.append(gene.getValue());
+        for (Entry<Gene, Double> gene : genomi) {
+            builder.append(gene.getValue().intValue());
             builder.append(",");
         }
         if (builder.length() > 0) {
