@@ -39,8 +39,11 @@ public class OtuksenPiirtoPaneeli extends JPanel {
      * Puun viivojen pituuteen vaikuttava perusarvo.
      */
     private int oletusPituus = 15;
+    
+    private Mutaatio mutaatio;
 
     public OtuksenPiirtoPaneeli(Otus otus) {
+        mutaatio = new Mutaatio();
         this.otus = otus;
     }
 
@@ -173,6 +176,6 @@ public class OtuksenPiirtoPaneeli extends JPanel {
         saadaVari(g, (float) (1 * ((100 - (genome.get(Gene.COLORSHIFT) * oksa.getHaara() * 5.0)) / 100.0)), oksa);
         g.drawLine((int) oksa.getX(), (int) oksa.getY(), (int) loppux, (int) loppuy);
 //        g.drawString(otus.toString(), 0, 10);
-        oksat.addFirst(new Oksa(loppux, loppuy, oksa.getHaara() + 1, kulma, new Mutaatio().mutatoi(otus)));
+        oksat.addFirst(new Oksa(loppux, loppuy, oksa.getHaara() + 1, kulma, mutaatio.mutatoi(otus)));
     }
 }

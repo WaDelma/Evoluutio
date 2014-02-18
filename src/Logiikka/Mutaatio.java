@@ -55,15 +55,16 @@ public class Mutaatio {
      * @param gene mutatoitavan geenin indeksinumero genomissa.
      */
     private void teeMutaatioIndeksiin(Genomi geenit, Gene gene) {
-        int mutaatio = geenit.get(gene);
-        mutaatio += arpoja.nextBoolean() ? -gene.getStep() : gene.getStep();
+        double mutaatio = geenit.get(gene);
+        int dir = arpoja.nextBoolean() ? 1 : -1;
+        mutaatio += dir * (arpoja.nextInt(gene.getMax() - gene.getMin()) + gene.getMin());
         if (mutaatio < gene.getMin()) {
             mutaatio = gene.getMin();
         }
         if (mutaatio > gene.getMax()) {
             mutaatio = gene.getMax();
         }
-        geenit.setGene(gene, mutaatio);
+        geenit.setGene(gene, (int) mutaatio);
     }
 
     /**

@@ -19,15 +19,23 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
      */
     private final EnumMap<Gene, Integer> genes;
 
-    public Genomi(int[] geenit) {
+    public Genomi() {
         this.genes = new EnumMap<Gene, Integer>(Gene.class);
+    }
+
+    public Genomi(int[] geenit) {
+        this();
         for (int i = 0; i < geenit.length; i++) {
             genes.put(Gene.values()[i], geenit[i]);
         }
     }
 
     public Genomi(Genomi genomi) {
-        this.genes = new EnumMap<Gene, Integer>(genomi.genes);
+        this();
+        for (Entry<Gene, Integer> entry : genomi) {
+            genes.put(entry.getKey(), entry.getValue().intValue());
+        }
+
     }
 
     public int get(Gene gene) {
@@ -97,28 +105,31 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
          * lähtösuuntaa suhteessa toisiinsa.
          */
         BRANCHING_ANGLE(-9, 9),
-        REDNESS(0, 255, 16),
-        GREENNES(0, 255, 16),
-        BLUENESS(0, 255, 16),
+        REDNESS(0, 255, 4, 16),
+        GREENNES(0, 255, 4, 16),
+        BLUENESS(0, 255, 4, 16),
         COLORSHIFT(-9, 9);
 
         public static Gene get(Random random) {
             return values()[random.nextInt(values().length)];
         }
-        private int min;
-        private int max;
-        private int step;
+        private final int min;
+        private final int max;
+        private final int minStep;
+        private final int maxStep;
 
-        private Gene(int min, int max, int step) {
+        private Gene(int min, int max, int minStep, int maxStep) {
             this.min = min;
             this.max = max;
-            this.step = step;
+            this.minStep = minStep;
+            this.maxStep = maxStep;
         }
 
         private Gene(int min, int max) {
             this.min = min;
             this.max = max;
-            this.step = 1;
+            this.minStep = 1;
+            this.maxStep = 1;
         }
 
         public int getMin() {
@@ -129,8 +140,12 @@ public class Genomi implements Iterable<Entry<Gene, Integer>> {
             return max;
         }
 
-        public int getStep() {
-            return step;
+        public int getMinStep() {
+            return minStep;
+        }
+
+        public int getMaxStep() {
+            return maxStep;
         }
     }
 }
